@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Bridge | Organization Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --forest: #1a3a24;
+            --forest-mid: #2d5a3d;
+            --forest-lt: #3d7a52;
+            --sage: #e8f0e9;
+            --sage-mid: #d0e0d3;
+            --sage-dk: #b8ccbc;
+            --mint: #4caf78;
+            --mint-lt: #7ecf9a;
+            --mint-sage: #BFCFBB;
+            --gold: #c9952a;
+            --red-alert: #c0392b;
+            --blue-soft: #2980b9;
+            --bs-body-bg: #e8f0e9;
+            --text: #1e2d22;
+            --text-md: #4a6350;
+            --text-lt: #7a9882;
+            --moss: #738A6E;
+            --sage-btn: #8EA58C;
+        }
+
+        body { 
+            background-color: #2A3B30; 
+            color: var(--text); 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        /* Navbar Styling */
+        .navbar { 
+            background-color: var(--sage); 
+            border-bottom: 2px solid var(--sage-mid); 
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        
+        /* First row container */
+        .navbar .container-fluid[style*="background-color"] { 
+            background-color: var(--sage) !important; 
+        }
+        
+        .nav-link { 
+            color: var(--text) !important; 
+            transition: 0.3s; 
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+        }
+        .nav-link:hover { 
+            color: var(--forest) !important; 
+            background-color: rgba(0,0,0,0.05);
+            border-radius: 8px;
+        }
+
+        /* Brand/Logo more visible */
+        .navbar-brand {
+            font-size: 1.8rem;          
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--text) !important;
+            text-shadow: 2px 2px 0 rgba(255,255,255,0.3);
+        }
+        .navbar-brand i {
+            font-size: 2.2rem;
+            color: var(--forest);
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+        }
+
+        /* search bar - in first row beside icons */
+        .search-wrapper {
+            background-color: rgba(255,255,255,0.5);
+            border-radius: 40px;
+            padding: 0.2rem 0.2rem 0.2rem 1rem;
+            border: 1px solid var(--sage-mid);
+            backdrop-filter: blur(2px);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            width: 280px;
+        }
+        .search-wrapper input {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-size: 0.9rem;
+            flex: 1;
+            min-width: 140px;
+            padding: 0.3rem 0;
+        }
+        .search-wrapper input::placeholder {
+            color: var(--text-md);
+            opacity: 0.8;
+        }
+        .search-wrapper input:focus {
+            outline: none;
+        }
+        .search-wrapper button {
+            background-color: var(--forest);
+            border: none;
+            border-radius: 40px;
+            padding: 0.3rem 1rem;
+            color: white;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+        .search-wrapper button:hover {
+            background-color: var(--forest-mid);
+            color: white;
+        }
+
+        /* Second row navigation */
+        .nav-row {
+            background-color: rgba(0,0,0,0.05);
+            padding: 0.3rem 0;
+            border-top: 1px solid var(--sage-mid);
+        }
+        .nav-row .nav-link {
+            color: var(--text) !important;
+            font-size: 0.95rem;
+            padding: 0.4rem 1.2rem !important;
+        }
+        .nav-row .nav-link:hover {
+            color: var(--forest) !important;
+            background-color: rgba(0,0,0,0.08);
+            border-radius: 20px;
+        }
+
+        /* Sidebar Filter Card */
+        .filter-card { 
+            background-color: var(--sage); 
+            color: var(--text); 
+            border-radius: 20px; 
+            border: none;
+            box-shadow: 0 8px 25px rgba(26, 58, 36, 0.2);
+        }
+        
+        /* filter labels: stylish */
+        .filter-header { 
+            color: var(--text-md); 
+            font-size: 0.8rem; 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+            font-family: 'Segoe UI', 'Inter', sans-serif;
+            background: rgba(0,0,0,0.03);
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        /* Section Headers */
+        h3.fw-bold {
+            color: var(--sage) !important;
+        }
+
+        /* Applicant Cards - matching filter container color */
+        .applicant-card {
+            background-color: var(--sage);
+            border: 2px solid transparent;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 8px 25px rgba(26, 58, 36, 0.1);
+        }
+        .applicant-card:hover {
+            border-color: var(--sage-dk);
+            background-color: white;
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px rgba(26, 58, 36, 0.15);
+        }
+
+        /* Applicant Avatar */
+        .applicant-avatar {
+            width: 50px;
+            height: 50px;
+            background-color: var(--forest);
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            border: 2px solid var(--sage-mid);
+        }
+
+        /* Course badge - updated to mint-sage */
+        .course-badge {
+            background-color: var(--mint-sage);
+            color: var(--text);
+            border-radius: 20px;
+            padding: 0.25rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Portfolio indicator */
+        .portfolio-indicator {
+            background-color: var(--gold);
+            color: var(--text);
+            border-radius: 20px;
+            padding: 0.25rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .portfolio-indicator i {
+            margin-right: 4px;
+        }
+
+        /* Resume indicator */
+        .resume-indicator {
+            background-color: var(--gold);
+            color: var(--text);
+            border-radius: 20px;
+            padding: 0.25rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .resume-indicator i {
+            margin-right: 4px;
+        }
+
+        /* Bookmark styling - red when active */
+        .bookmark-icon {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .bookmark-icon:hover {
+            transform: scale(1.1);
+        }
+        .bookmark-icon.active {
+            color: var(--red-alert) !important;
+        }
+
+        /* Buttons */
+        .btn-profile { 
+            background-color: var(--forest); 
+            color: white; 
+            border: 1px solid var(--forest-lt); 
+            border-radius: 10px; 
+            font-weight: 600;
+            flex: 1;
+            font-size: 0.9rem;
+            padding: 0.5rem 0;
+        }
+        .btn-profile:hover { 
+            background-color: var(--forest-mid); 
+            color: white; 
+        }
+
+        .btn-scout { 
+            background-color: var(--sage-btn); 
+            color: white; 
+            border: none; 
+            border-radius: 10px; 
+            font-weight: 600;
+            flex: 1;
+            font-size: 0.9rem;
+            padding: 0.5rem 0;
+        }
+        .btn-scout:hover { 
+            background-color: var(--moss); 
+            color: white; 
+        }
+
+        /* Custom Dropdowns */
+        .form-select-dark {
+            background-color: rgba(255,255,255,0.5);
+            color: var(--text);
+            border: 1px solid var(--sage-mid);
+        }
+        .form-select-dark option { color: var(--text); }
+
+        /* Profile role text */
+        .profile-role {
+            font-size: 0.7rem;
+            color: var(--text-md);
+            line-height: 1.2;
+            opacity: 0.9;
+        }
+
+        /* apply filter button - updated to match Details button */
+        .btn-filter-apply {
+            background-color: var(--forest);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            padding: 0.6rem 1rem;
+            width: 100%;
+            transition: 0.2s;
+        }
+        .btn-filter-apply:hover {
+            background-color: var(--forest-mid);
+            color: white;
+        }
+
+        /* sticky fix */
+        .sticky-top-custom {
+            top: 100px;
+            position: sticky;
+        }
+
+        /* card actions */
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 1rem;
+        }
+
+        /* User name area - ensure it displays fully */
+        .user-display {
+            max-width: 180px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Dropdown icon spacing */
+        .dropdown-item i {
+            width: 1.3rem;
+        }
+        
+        /* Override the inline style background */
+        .container-fluid[style*="background-color"] {
+            background-color: var(--sage) !important;
+        }
+
+        /* Student info text */
+        .student-meta {
+            font-size: 0.75rem;
+            color: var(--text-md);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAVBAR with two rows -->
+    <nav class="navbar sticky-top p-0">
+        <!-- First row: Brand, Search, Icons, Profile -->
+        <div class="container-fluid py-2">
+            <div class="container d-flex justify-content-between align-items-center">
+                <!-- Brand -->
+                <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
+                    <i class="bi bi-bridge fs-1 me-2"></i>
+                    <span>GREEN BRIDGE</span>
+                </a>
+                
+                <!-- Right section: Search bar, Icons, Profile -->
+                <div class="d-flex align-items-center">
+                    <!-- Search bar beside icons -->
+                    <div class="search-wrapper me-3">
+                        <input type="text" placeholder="Search applicants...">
+                        <button><i class="bi bi-search"></i> Go</button>
+                    </div>
+                    
+                    <!-- Icons -->
+                    <div class="d-flex me-3 gap-2">
+                        <a href="#" class="nav-link px-2" title="Messages"><i class="bi bi-chat-dots fs-5"></i></a>
+                        <a href="#" class="nav-link px-2" title="Email"><i class="bi bi-envelope-at fs-5"></i></a>
+                        <a href="#" class="nav-link px-2" title="Notifications"><i class="bi bi-bell fs-5"></i></a>
+                    </div>
+
+                    <!-- Profile dropdown -->
+                    <div class="dropdown">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-dark" data-bs-toggle="dropdown">
+                            <img src="https://ui-avatars.com/api/?name=Green+Org&background=8EA58C&color=fff" width="40" height="40" class="rounded-circle border-2 border-white">
+                            <div class="ms-2 text-start d-none d-md-block user-display">
+                                <span class="small fw-bold d-block text-dark">Green Org</span>
+                                <span class="profile-role">Organization</span>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0">
+                            <li><h6 class="dropdown-header">Organization Account</h6></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>View Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-people me-2"></i>Team Members</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-clock-history me-2"></i>Activity</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i>Log Out</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second row: Navigation links only -->
+        <div class="container-fluid nav-row">
+            <div class="container d-flex justify-content-start gap-2">
+                <a href="#" class="nav-link px-3 fw-semibold">Home</a>
+                <a href="#" class="nav-link px-3 fw-semibold">Community</a>
+                <a href="#" class="nav-link px-3 fw-semibold">Applications</a>
+                <a href="#" class="nav-link px-3 fw-semibold">Scout</a>
+                <a href="#" class="nav-link px-3 fw-semibold">Bookmarks</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 mb-5">
+        <div class="row">
+            
+            <!-- sidebar filter card -->
+            <aside class="col-lg-3">
+                <div class="card filter-card p-4 sticky-top-custom">
+                    <h5 class="mb-4 fw-bold"><i class="bi bi-funnel me-2"></i>Filter</h5>
+                    
+                    <div class="mb-4">
+                        <span class="filter-header mb-2"><i class="bi bi-tag me-1"></i>Looking For</span>
+                        <select class="form-select form-select-sm form-select-dark mt-2">
+                            <option selected>All Types</option>
+                            <option>Workshop</option>
+                            <option>Internship</option>
+                            <option>OJT</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <span class="filter-header mb-2"><i class="bi bi-building me-1"></i>College</span>
+                        <select class="form-select form-select-sm form-select-dark mt-2">
+                            <option selected>All Colleges</option>
+                            <option>CEAT (Engineering)</option>
+                            <option>COED (Education)</option>
+                            <option>CLAC (Liberal Arts)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <span class="filter-header mb-2"><i class="bi bi-book me-1"></i>Course</span>
+                        <select class="form-select form-select-sm form-select-dark mt-2">
+                            <option selected>All Courses</option>
+                            <option>Computer Engineering</option>
+                            <option>Mechanical Engineering</option>
+                            <option>Education</option>
+                            <option>Communication</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <span class="filter-header mb-2"><i class="bi bi-file-earmark me-1"></i>Portfolio/Resume</span>
+                        <div class="mt-2">
+                            <div class="form-check small mb-1">
+                                <input class="form-check-input" type="checkbox" id="hasPortfolio">
+                                <label class="form-check-label" for="hasPortfolio">Portfolio</label>
+                            </div>
+                            <div class="form-check small">
+                                <input class="form-check-input" type="checkbox" id="hasResume">
+                                <label class="form-check-label" for="hasResume">Resume</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-filter-apply">Apply Filters</button>
+                </div>
+            </aside>
+
+            <main class="col-lg-9">
+                <div class="mb-4">
+                    <h3 class="fw-bold">Scout for Applicants</h3>
+                    <p class="text-white-50 small">Based on your organization's needs</p>
+                </div>
+
+                <!-- Applicant Cards Grid - 3 per row -->
+                <div class="row g-4">
+                    <!-- Jose Rizal -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="applicant-card p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="d-flex gap-2">
+                                    <div class="applicant-avatar" style="width: 45px; height: 45px; font-size: 1rem;">JR</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0">Jose Rizal</h6>
+                                        <p class="student-meta mb-1">CEAT · CompEng</p>
+                                        <p class="student-meta mb-0">
+                                            <i class="bi bi-briefcase me-1"></i>OJT / Internship
+                                        </p>
+                                    </div>
+                                </div>
+                                <i class="bi bi-bookmark bookmark-icon text-muted" style="font-size: 1rem;" onclick="toggleBookmark(this)"></i>
+                            </div>
+                            
+                            <p class="small text-muted mb-2 mt-1">
+                                <i class="bi bi-code-square me-1"></i>Interested in systems development
+                            </p>
+                            
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                <span class="course-badge">CompEng</span>
+                                <span class="portfolio-indicator"><i class="bi bi-file-earmark"></i> Portfolio</span>
+                            </div>
+                            
+                            <div class="card-actions mt-2">
+                                <button class="btn btn-profile py-1">Profile</button>
+                                <button class="btn btn-scout py-1">Scout</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clara Lim -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="applicant-card p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="d-flex gap-2">
+                                    <div class="applicant-avatar" style="width: 45px; height: 45px; font-size: 1rem;">CL</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0">Clara Lim</h6>
+                                        <p class="student-meta mb-1">COED · Education</p>
+                                        <p class="student-meta mb-0">
+                                            <i class="bi bi-briefcase me-1"></i>Workshop
+                                        </p>
+                                    </div>
+                                </div>
+                                <i class="bi bi-bookmark bookmark-icon text-muted" style="font-size: 1rem;" onclick="toggleBookmark(this)"></i>
+                            </div>
+                            
+                            <p class="small text-muted mb-2 mt-1">
+                                <i class="bi bi-heart me-1"></i>Passionate about teaching
+                            </p>
+                            
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                <span class="course-badge">Education</span>
+                                <span class="resume-indicator"><i class="bi bi-file-earmark"></i> Resume</span>
+                            </div>
+                            
+                            <div class="card-actions mt-2">
+                                <button class="btn btn-profile py-1">Profile</button>
+                                <button class="btn btn-scout py-1">Scout</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mark Villar -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="applicant-card p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="d-flex gap-2">
+                                    <div class="applicant-avatar" style="width: 45px; height: 45px; font-size: 1rem;">MV</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0">Mark Villar</h6>
+                                        <p class="student-meta mb-1">CLAC · Comm</p>
+                                        <p class="student-meta mb-0">
+                                            <i class="bi bi-briefcase me-1"></i>Internship
+                                        </p>
+                                    </div>
+                                </div>
+                                <i class="bi bi-bookmark bookmark-icon text-muted" style="font-size: 1rem;" onclick="toggleBookmark(this)"></i>
+                            </div>
+                            
+                            <p class="small text-muted mb-2 mt-1">
+                                <i class="bi bi-camera me-1"></i>Content creator, social media
+                            </p>
+                            
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                <span class="course-badge">Comm</span>
+                                <span class="portfolio-indicator"><i class="bi bi-file-earmark"></i> Portfolio</span>
+                            </div>
+                            
+                            <div class="card-actions mt-2">
+                                <button class="btn btn-profile py-1">Profile</button>
+                                <button class="btn btn-scout py-1">Scout</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sofia Andres -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="applicant-card p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="d-flex gap-2">
+                                    <div class="applicant-avatar" style="width: 45px; height: 45px; font-size: 1rem;">SA</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0">Sofia Andres</h6>
+                                        <p class="student-meta mb-1">CEAT · MechEng</p>
+                                        <p class="student-meta mb-0">
+                                            <i class="bi bi-briefcase me-1"></i>OJT
+                                        </p>
+                                    </div>
+                                </div>
+                                <i class="bi bi-bookmark bookmark-icon text-muted" style="font-size: 1rem;" onclick="toggleBookmark(this)"></i>
+                            </div>
+                            
+                            <p class="small text-muted mb-2 mt-1">
+                                <i class="bi bi-tools me-1"></i>CAD / AutoCAD skilled
+                            </p>
+                            
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                <span class="course-badge">MechEng</span>
+                                <span class="portfolio-indicator"><i class="bi bi-file-earmark"></i> Portfolio</span>
+                            </div>
+                            
+                            <div class="card-actions mt-2">
+                                <button class="btn btn-profile py-1">Profile</button>
+                                <button class="btn btn-scout py-1">Scout</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Maria Cruz -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="applicant-card p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="d-flex gap-2">
+                                    <div class="applicant-avatar" style="width: 45px; height: 45px; font-size: 1rem;">MC</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0">Maria Cruz</h6>
+                                        <p class="student-meta mb-1">COED · Education</p>
+                                        <p class="student-meta mb-0">
+                                            <i class="bi bi-briefcase me-1"></i>Workshop
+                                        </p>
+                                    </div>
+                                </div>
+                                <i class="bi bi-bookmark bookmark-icon text-muted" style="font-size: 1rem;" onclick="toggleBookmark(this)"></i>
+                            </div>
+                            
+                            <p class="small text-muted mb-2 mt-1">
+                                <i class="bi bi-book me-1"></i>Specializes in early childhood
+                            </p>
+                            
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                <span class="course-badge">Education</span>
+                                <span class="resume-indicator"><i class="bi bi-file-earmark"></i> Resume</span>
+                            </div>
+                            
+                            <div class="card-actions mt-2">
+                                <button class="btn btn-profile py-1">Profile</button>
+                                <button class="btn btn-scout py-1">Scout</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- David Santos -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="applicant-card p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div class="d-flex gap-2">
+                                    <div class="applicant-avatar" style="width: 45px; height: 45px; font-size: 1rem;">DS</div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0">David Santos</h6>
+                                        <p class="student-meta mb-1">CLAC · Comm</p>
+                                        <p class="student-meta mb-0">
+                                            <i class="bi bi-briefcase me-1"></i>Internship
+                                        </p>
+                                    </div>
+                                </div>
+                                <i class="bi bi-bookmark bookmark-icon text-muted" style="font-size: 1rem;" onclick="toggleBookmark(this)"></i>
+                            </div>
+                            
+                            <p class="small text-muted mb-2 mt-1">
+                                <i class="bi bi-megaphone me-1"></i>Marketing & communications
+                            </p>
+                            
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                <span class="course-badge">Comm</span>
+                                <span class="portfolio-indicator"><i class="bi bi-file-earmark"></i> Portfolio</span>
+                            </div>
+                            
+                            <div class="card-actions mt-2">
+                                <button class="btn btn-profile py-1">Profile</button>
+                                <button class="btn btn-scout py-1">Scout</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Bookmark toggle function - changes to red when clicked
+        function toggleBookmark(element) {
+            if (element.classList.contains('bi-bookmark')) {
+                element.classList.remove('bi-bookmark', 'text-muted');
+                element.classList.add('bi-bookmark-fill', 'active');
+            } else {
+                element.classList.remove('bi-bookmark-fill', 'active');
+                element.classList.add('bi-bookmark', 'text-muted');
+            }
+        }
+
+        // Prevent card click when clicking bookmark
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.bookmark-icon').forEach(icon => {
+                icon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
